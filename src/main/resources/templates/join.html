@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="globals.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<style>
+  /* 기존 스타일 생략... */
+  .disabled {
+    background-color: grey;
+    cursor: not-allowed;
+  }
+</style>
+<body>
+<div class="element">
+  <div class="overlap">
+    <div class="text-wrapper">보험</div>
+    <div class="view">
+      <div class="overlap-group"><div class="div">로그아웃</div></div>
+    </div>
+    <img class="image" src="img/image.svg" />
+    <div class="overlap-2">
+      <div class="text-wrapper-2">상품 가입</div>
+      <img class="line" src="img/line-19.svg" />
+      <div class="rectangle"></div>
+    </div>
+    <div class="text-wrapper-3">상품</div>
+    <div class="text-wrapper-4">상품</div>
+    <div class="text-wrapper-5">my</div>
+  </div>
+  <div class="overlap-3">
+    <img class="img" src="img/image-4.png" />
+    <div class="rectangle-2"></div>
+    <div class="text-wrapper-6">가입하기</div>
+    <div class="rectangle-3"></div>
+    <div class="rectangle-4"></div>
+    <div class="rectangle-5"></div>
+    <div class="rectangle-6"></div>
+    <div class="text-wrapper-7">여행중 배상책임</div>
+    <div class="text-wrapper-8">상해사망</div>
+    <div class="text-wrapper-9">2억원</div>
+    <div class="text-wrapper-10">2억원</div>
+    <div class="text-wrapper-11">1,000만원</div>
+    <div class="rectangle-7"></div>
+    <form action="/join-insurance" method="post" id="joinForm">
+      <input type="hidden" name="insuranceId" value="SPECIFIC_INSURANCE_ID">
+      <label>
+        <input type="checkbox" id="termsCheckbox">
+        보험 약관 동의
+      </label>
+      <button type="submit" class="text-wrapper-12 disabled" id="joinButton" disabled>가입하기</button>
+    </form>
+    <div class="text-wrapper-13">보장 내용</div>
+    <img class="line-2" src="img/line-32.svg" />
+    <div class="text-wrapper-14">상해후유장해</div>
+  </div>
+  <div class="rectangle-8"></div>
+  <div class="text-wrapper-15">상품 가입</div>
+</div>
+
+<script>
+  document.getElementById('termsCheckbox').addEventListener('change', function() {
+    var joinButton = document.getElementById('joinButton');
+    if (this.checked) {
+      joinButton.disabled = false;
+      joinButton.classList.remove('disabled');
+    } else {
+      joinButton.disabled = true;
+      joinButton.classList.add('disabled');
+    }
+  });
+</script>
+</body>
+</html>

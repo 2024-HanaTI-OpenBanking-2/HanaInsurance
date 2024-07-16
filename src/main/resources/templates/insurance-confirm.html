@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="globals.css" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: "Inter-Regular", Helvetica, sans-serif;
+      background-color: #f8f9fa;
+      margin: 0;
+      padding: 0;
+    }
+    .element {
+      position: relative;
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #ffffff;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      background-color: #f2f2f2;
+      border-bottom: 1px solid #ddd;
+    }
+    .header .menu {
+      display: flex;
+      gap: 20px;
+    }
+    .header .menu a {
+      text-decoration: none;
+      color: #000;
+      font-weight: bold;
+    }
+    .header .logout {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-decoration: none;
+    }
+    .header .logout:hover {
+      background-color: #45a049;
+    }
+    .content {
+      padding: 20px;
+    }
+    .insurance-confirm {
+      background-color: #ffffff;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+    }
+    .insurance-confirm h3 {
+      margin-top: 0;
+    }
+    .insurance-confirm p {
+      margin: 5px 0;
+    }
+    .disabled {
+      background-color: grey;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+<div class="header">
+  <div class="text-wrapper">보험</div>
+  <div class="menu">
+    <a href="/join-lists">my</a>
+    <a href="/product-list">가입</a>
+    <a href="/product-list">상품</a>
+    <a href="/product-list">상품</a>
+  </div>
+  <a href="/logout" class="logout">로그아웃</a>
+</div>
+<div class="element">
+  <h2>상품 가입</h2>
+  <div class="content">
+    <div class="insurance-confirm">
+      <img src="img/insurance3.png" alt="해외여행" style="width: 100px; height: 100px;">
+      <h3>보장 내용</h3>
+      <p>상해사망: 2억원</p>
+      <p>상해후유장해: 2억원</p>
+      <p>여행중 배상책임: 1,000만원</p>
+      <button id="termsButton">보험 약관</button>
+      <form action="/join-insurance" method="post" id="joinForm">
+        <input type="hidden" name="insuranceId" value="INS003">
+        <button type="submit" id="joinButton" class="disabled" disabled>가입하기</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('termsButton').addEventListener('click', function() {
+    window.open('/path/to/insurance-terms.pdf', '_blank');
+    var joinButton = document.getElementById('joinButton');
+    joinButton.disabled = false;
+    joinButton.classList.remove('disabled');
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="globals.css" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: "Inter-Regular", Helvetica, sans-serif;
+      background-color: #f8f9fa;
+      margin: 0;
+      padding: 0;
+    }
+    .element {
+      position: relative;
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #ffffff;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      background-color: #f2f2f2;
+      border-bottom: 1px solid #ddd;
+    }
+    .header .menu {
+      display: flex;
+      gap: 20px;
+    }
+    .header .menu a {
+      text-decoration: none;
+      color: #000;
+      font-weight: bold;
+    }
+    .header .logout {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-decoration: none;
+    }
+    .header .logout:hover {
+      background-color: #45a049;
+    }
+    .content {
+      padding: 20px;
+    }
+    .product-detail {
+      background-color: #ffffff;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+    }
+    .product-detail h3 {
+      margin-top: 0;
+    }
+    .product-detail p {
+      margin: 5px 0;
+    }
+    .disabled {
+      background-color: grey;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+<div class="header">
+  <div class="text-wrapper">보험</div>
+  <div class="menu">
+    <a href="/join-lists">my</a>
+    <a href="/product-list">가입</a>
+    <a href="/product-list">상품</a>
+    <a href="/product-list">상품</a>
+  </div>
+  <a href="/logout" class="logout">로그아웃</a>
+</div>
+<div class="element">
+  <h2>상품 가입</h2>
+  <div class="content">
+    <div class="product-detail">
+      <img src="img/insurance3.png" alt="해외여행" style="width: 100px; height: 100px;">
+      <h3>해외여행</h3>
+      <p>#해외여행 준비 필수템</p>
+      <p>#해외 폭력피해 법률사선임비 보장</p>
+      <form action="/terms-confirm" method="post">
+        <input type="hidden" name="insuranceId" value="INS003">
+        <label>
+          <input type="checkbox" id="termsCheckbox">
+          위 내용을 충분히 확인하였습니다.
+        </label>
+        <br>
+        <button type="submit" id="confirmButton" class="disabled" disabled>확인</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('termsCheckbox').addEventListener('change', function() {
+    var confirmButton = document.getElementById('confirmButton');
+    if (this.checked) {
+      confirmButton.disabled = false;
+      confirmButton.classList.remove('disabled');
+    } else {
+      confirmButton.disabled = true;
+      confirmButton.classList.add('disabled');
+    }
+  });
+</script>
+</body>
+</html>
