@@ -6,14 +6,13 @@ import HanaInsurance.HanaInsurance.entity.InsJoinList;
 import HanaInsurance.HanaInsurance.repository.InsCustomerRepository;
 import HanaInsurance.HanaInsurance.repository.InsJoinListRepository;
 import java.sql.Timestamp;
-import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class InsService {
+public class MainService {
   @Autowired
   private InsCustomerRepository insCustomerRepository;
 

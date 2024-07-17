@@ -2,7 +2,7 @@ package HanaInsurance.HanaInsurance.controller;
 
 import HanaInsurance.HanaInsurance.dto.InsJoinListDTO;
 import HanaInsurance.HanaInsurance.entity.InsCustomer;
-import HanaInsurance.HanaInsurance.service.InsService;
+import HanaInsurance.HanaInsurance.service.MainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,9 +12,9 @@ import jakarta.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
-public class InsController {
+public class MainController {
   @Autowired
-  private InsService insService;
+  private MainService mainService;
 
   @GetMapping("/login")
   public String loginForm() {
@@ -33,9 +33,9 @@ public class InsController {
 
   @PostMapping("/login")
   public String login(@RequestParam String customerId, @RequestParam String password, HttpSession session) {
-    InsCustomer customer = insService.authenticate(customerId, password);
+    InsCustomer customer = mainService.authenticate(customerId, password);
     if (customer != null) {
-      session.setAttribute("customerId", customer.getCustomerId());
+      session.setAttribute("customer", customer); // 전체 사용자 정보를 세션에 저장
       return "redirect:/join-lists";
     } else {
       return "login";
@@ -50,9 +50,9 @@ public class InsController {
 
   @GetMapping("/join-lists")
   public String getJoinList(Model model, HttpSession session) {
-    String customerId = (String) session.getAttribute("customerId");
-    if (customerId != null) {
-      List<InsJoinListDTO> joinListDTOs = insService.getJoinListByCustomerId(customerId);
+    InsCustomer customer = (InsCustomer) session.getAttribute("customer");
+    if (customer != null) {
+      List<InsJoinListDTO> joinListDTOs = mainService.getJoinListByCustomerId(customer.getCustomerId());
       model.addAttribute("joinLists", joinListDTOs);
       return "join-lists";
     } else {
@@ -86,9 +86,9 @@ public class InsController {
 
   @PostMapping("/join-insurance")
   public String joinInsurance(@RequestParam String insuranceId, HttpSession session) {
-    String customerId = (String) session.getAttribute("customerId");
-    if (customerId != null) {
-      insService.joinInsurance(customerId, insuranceId);
+    InsCustomer customer = (InsCustomer) session.getAttribute("customer");
+    if (customer != null) {
+      mainService.joinInsurance(customer.getCustomerId(), insuranceId);
       return "redirect:/join-lists";
     } else {
       return "redirect:/login";

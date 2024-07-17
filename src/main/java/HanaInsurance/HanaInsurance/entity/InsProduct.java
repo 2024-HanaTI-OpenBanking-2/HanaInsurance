@@ -7,6 +7,7 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
+@Data
 @Table(name = "ins_products")
 public class InsProduct {
   @Id
