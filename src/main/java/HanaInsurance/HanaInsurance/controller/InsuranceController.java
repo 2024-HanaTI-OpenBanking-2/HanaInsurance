@@ -4,13 +4,17 @@ import HanaInsurance.HanaInsurance.dto.AccountCiResponseDTO;
 import HanaInsurance.HanaInsurance.dto.AccountInfoInsDTO;
 import HanaInsurance.HanaInsurance.dto.CombinedAccountInfo;
 import HanaInsurance.HanaInsurance.dto.InsuranceResponseDTO;
+import HanaInsurance.HanaInsurance.entity.InsAccount;
 import HanaInsurance.HanaInsurance.entity.InsCustomer;
+import HanaInsurance.HanaInsurance.repository.InsAccountRepository;
 import HanaInsurance.HanaInsurance.repository.InsCustomerRepository;
 import HanaInsurance.HanaInsurance.service.InsuranceService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,8 +33,13 @@ public class InsuranceController {
   @Autowired
   private InsCustomerRepository insCustomerRepository;
 
+  @Autowired
+  private InsAccountRepository insAccountRepository;
+
+
   @GetMapping("/accountinfo")
-  public ResponseEntity<CombinedAccountInfo> getAccountInfo(HttpServletRequest request, Model model) {
+  public ResponseEntity<CombinedAccountInfo> getAccountInfo(HttpServletRequest request,
+      Model model) {
     // 사용자 ID 추출 로직
     String customerId = getUserId(request, model);
 
@@ -44,7 +53,8 @@ public class InsuranceController {
 
     // ci 요청에 담아서 날리기
     AccountInfoInsDTO accountInfoInsDTO = new AccountInfoInsDTO(ci); // DTO 생성
-    CombinedAccountInfo combinedAccountInfo = insuranceService.getCombinedAccountInfo(accountInfoInsDTO); // 서비스 호출
+    CombinedAccountInfo combinedAccountInfo = insuranceService.getCombinedAccountInfo(
+        accountInfoInsDTO); // 서비스 호출
     return ResponseEntity.ok(combinedAccountInfo); // 결합된 계좌 정보 응답
   }
 
@@ -64,9 +74,52 @@ public class InsuranceController {
   }
 
 
-
   @PostMapping("/list")
-  public List<InsuranceResponseDTO> getInsuranceList(@RequestBody AccountCiResponseDTO accountCiResponseDTO) {
+  public List<InsuranceResponseDTO> getInsuranceList(
+      @RequestBody AccountCiResponseDTO accountCiResponseDTO) {
     return insuranceService.getInsuranceList(accountCiResponseDTO);
   }
+
+  @PostMapping("/saveOrUpdateAccount")
+  public ResponseEntity<?> saveOrUpdateAccount(@RequestBody InsAccount account, HttpSession session) {
+    try {
+      System.out.println("in the saveOrUpdateAccount");
+      InsCustomer customer = (InsCustomer) session.getAttribute("customer");
+      if (customer == null) {
+        throw new IllegalStateException("No customer is logged in");
+      }
+
+      String customerId = customer.getCustomerId();
+      account.setCustomerId(customerId);
+      System.out.println("Customer ID from session: " + customerId);
+
+      Optional<InsAccount> existingAccountOpt = insAccountRepository.findByAccountNoAndCustomerId(account.getAccountNo(), customerId);
+      if (existingAccountOpt.isPresent()) {
+        InsAccount existingAccount = existingAccountOpt.get();
+        existingAccount.setAccountName(account.getAccountName());
+        existingAccount.setBankCode(account.getBankCode());
+        existingAccount.setBalance(account.getBalance());
+        existingAccount.setAccountNo(account.getAccountNo());
+        return ResponseEntity.ok(insAccountRepository.save(existingAccount));
+      } else {
+        return ResponseEntity.ok(insAccountRepository.save(account));
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
+    }
+  }
+
+  @GetMapping("/currentAccount")
+  public ResponseEntity<?> getCurrentAccount(HttpSession session) {
+    InsCustomer customer = (InsCustomer) session.getAttribute("customer");
+    if (customer == null) {
+      return ResponseEntity.status(401).body("No customer is logged in");
+    }
+
+    String customerId = customer.getCustomerId();
+    List<InsAccount> accounts = insAccountRepository.findByCustomerId(customerId);
+    return ResponseEntity.ok(accounts);
+  }
+
 }

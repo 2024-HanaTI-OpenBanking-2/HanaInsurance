@@ -1,9 +1,13 @@
 package HanaInsurance.HanaInsurance.controller;
 
 import HanaInsurance.HanaInsurance.dto.InsJoinListDTO;
+import HanaInsurance.HanaInsurance.entity.InsAccount;
 import HanaInsurance.HanaInsurance.entity.InsCustomer;
+import HanaInsurance.HanaInsurance.repository.InsAccountRepository;
 import HanaInsurance.HanaInsurance.service.MainService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +19,9 @@ import java.util.List;
 public class MainController {
   @Autowired
   private MainService mainService;
+
+  @Autowired
+  private InsAccountRepository insAccountRepository;
 
   @GetMapping("/login")
   public String loginForm() {
@@ -93,5 +100,20 @@ public class MainController {
     } else {
       return "redirect:/login";
     }
+  }
+
+  @GetMapping("/change-account")
+  public String changeAccount() {
+    return "change_account"; // Thymeleaf는 .html 확장자를 자동으로 찾습니다.
+  }
+
+
+  @GetMapping("/current/{customerId}")
+  public ResponseEntity<?> getCurrentAccount(@PathVariable String customerId) {
+    List<InsAccount> accounts = insAccountRepository.findByCustomerId(customerId);
+    if (accounts.isEmpty()) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No accounts found for customer id: " + customerId);
+    }
+    return ResponseEntity.ok(accounts);
   }
 }
