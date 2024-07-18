@@ -37,5 +37,7 @@ public class InsJoinList {
   @Column(name = "insurance_status", length = 255)
   private String insuranceStatus;
 
-  // Getters and Setters
+  @Column(name = "insurance_name", length = 1000)
+  private String insuranceName;
+
 }

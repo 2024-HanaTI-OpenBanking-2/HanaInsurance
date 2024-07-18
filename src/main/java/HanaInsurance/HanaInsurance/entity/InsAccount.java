@@ -9,11 +9,11 @@ import lombok.Data;
 @Table(name = "ins_accounts")
 public class InsAccount {
   @Id
-  @Column(name = "account_no", length = 255, nullable = false)
-  private String accountNo;
-
   @Column(name = "customer_id", length = 255, nullable = false)
   private String customerId;
+
+  @Column(name = "account_no", length = 255, nullable = false)
+  private String accountNo;
 
   @Column(name = "account_name", length = 255)
   private String accountName;
@@ -32,6 +32,4 @@ public class InsAccount {
 
   @Column(name = "bank_code", length = 255)
   private String bankCode;
-
-  // Getters and Setters
 }
