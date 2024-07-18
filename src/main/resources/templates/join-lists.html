@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>하나 보험</title>
+  <style>
+    body {
+      font-family: "Inter-Regular", Helvetica, sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      background-color: #fffdfd;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .header .left-section {
+      display: flex;
+      align-items: center;
+      font-size: 30px;
+      flex: 1;
+      font-weight: 800;
+    }
+
+    .header .left-section img {
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    .header .right-section {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      font-size: 20px;
+    }
+
+    .header .right-section .menu {
+      display: flex;
+      gap: 40px;
+    }
+
+    .header .right-section .menu a {
+      text-decoration: none;
+      color: #008080;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+
+    .header .right-section .menu a:hover {
+      color: #004d4d;
+    }
+
+    .header .right-section .logout {
+      background-color: #014242;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .main-search {
+      height: 20px;
+      margin-left: 10px;
+    }
+
+    .all-menu-icon {
+      height: 20px;
+      margin-left: 10px;
+    }
+
+    .header-mini-bar {
+      width: 100%;
+      height: 30px;
+      background-color: #f0f0f0;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+    }
+
+    .header-mini-bar .menu {
+      display: flex;
+      gap: 20px;
+    }
+
+    .header-mini-bar .menu a {
+      text-decoration: none;
+      color: #000;
+      font-weight: bold;
+    }
+
+    .header-mini-bar .menu a:hover {
+      color: #004d4d;
+    }
+
+    .main {
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+      background-color: #ffffff;
+      height: calc(100vh - 88px);
+    }
+
+    .left-sidebar,
+    .right-sidebar {
+      flex: 1;
+    }
+
+    .center-content {
+      flex: 2;
+      background-color: #ffffff;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      max-width: 800px;
+      overflow-y: auto;
+    }
+
+    .insurance-box {
+      background-color: #ffffff;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .insurance-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .insurance-header h3 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .insurance-details {
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-end;
+      flex-direction: column;
+      margin-bottom: 10px;
+    }
+
+    .insurance-details p {
+      margin: 5px 0;
+    }
+
+    .insurance-details hr {
+      width: 100%;
+      border: 0;
+      border-top: 1px solid #ddd;
+      margin: 10px 0;
+    }
+
+    .insurance-footer {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .insurance-footer button {
+      background-color: #008080;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-right: 10px;
+      font-size: 16px;
+      transition: background-color 0.3s ease, transform 0.1s ease;
+    }
+
+    .insurance-footer button:hover {
+      background-color: #014242;
+    }
+
+    .insurance-footer button:active {
+      transform: scale(0.95);
+    }
+
+    .footer {
+      background-color: #f9f9f9;
+      padding: 20px;
+      text-align: center;
+      border-top: 1px solid #ddd;
+      margin-top: 20px;
+    }
+
+    .footer img {
+      height: 20px;
+      margin: 0 10px;
+    }
+
+    .footer .social-media img {
+      height: 30px;
+      margin: 0 5px;
+    }
+
+    .footer .footer-info {
+      font-size: 12px;
+      color: #666;
+      margin: 10px 0;
+    }
+
+    @font-face {
+      font-family: 'CustomFont';
+      src: url('/fonts/Hana2-Medium.otf') format('opentype');
+    }
+
+    body {
+      font-family: 'CustomFont', sans-serif;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 600px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .styled-link {
+      display: inline-block;
+      background-color: #008080;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 500;
+      transition: background-color 0.3s ease, transform 0.1s ease;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .styled-link:hover {
+      background-color: #014242;
+    }
+
+    .styled-link:active {
+      transform: scale(0.95);
+    }
+
+    .modal p {
+      margin: 10px 0;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .modal h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    .footer-socials {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .footer-socials a {
+      font-size: 40px; /* 소셜 미디어 아이콘 크기 */
+      color: #333; /* 기본 색상을 어두운 회색으로 변경 */
+      transition: color 0.3s ease; /* 색상 변화에 부드러운 전환 효과 적용 */
+    }
+
+    .footer-socials a:hover {
+      color: #555; /* 호버 시 색상을 조금 더 밝은 회색으로 변경 */
+    }
+    .social-link i {
+      transition: transform 0.3s ease;
+    }
+
+    .social-link i:hover {
+      transform: scale(1.2); /* 아이콘 확대 효과 */
+    }
+  </style>
+</head>
+<body>
+<div class="header">
+  <div class="left-section">
+    <img src="img/hana_logo.png" alt="로고">
+    <div class="text-wrapper">하나 보험</div>
+  </div>
+  <div class="right-section">
+    <div class="menu">
+      <a href="/join-lists">내 보험</a>
+      <a href="/product-list">보험 상품</a>
+      <a href="/change-account">계좌 변경</a>
+      <a href="/product-list">공사중</a>
+
+    </div>
+    <img src="img/main_search.png" class="main-search" alt="검색">
+    <img src="img/all_menu_icon.png" class="all-menu-icon" alt="전체 메뉴">
+    <a href="/logout" class="logout">로그아웃</a>
+  </div>
+</div>
+<div class="header-mini-bar">
+  <div class="menu">
+    <!--    <a href="/">홈</a>-->
+    <!--    <a href="/insurance-products">보험상품</a>-->
+    <!--    <a href="/benefits">혜택</a>-->
+    <!--    <a href="/claims">보상</a>-->
+    <!--    <a href="/mypage">마이페이지</a>-->
+    <!--    <a href="/customer-center">고객센터</a>-->
+  </div>
+</div>
+<div class="main">
+  <div class="left-sidebar"></div>
+  <div class="center-content">
+    <h2>보유 보험 내역</h2>
+    <div class="insurance-box" th:each="joinList : ${joinLists}">
+      <div class="insurance-header">
+        <h3 th:text="${joinList.insuranceName}"></h3>
+      </div>
+      <div class="insurance-details">
+        <p>보험기간: <span th:text="${#dates.format(joinList.subscriptionDate, 'yyyy.MM.dd')}"></span> ~
+          <span th:text="${#dates.format(joinList.endDate, 'yyyy.MM.dd')}"></span></p>
+        <p>보험상태: <span th:text="${joinList.insuranceStatus}"></span></p>
+        <hr>
+        <p>총 보험료: <span th:text="${joinList.totalFee}"></span>원</p>
+        <p>납부 보험료: <span th:text="${joinList.currentFee}"></span>원</p>
+      </div>
+      <div class="insurance-footer">
+        <button onclick="openModal()">상세 조회</button>
+        <button onclick="openModal()">결제 계좌 변경</button>
+      </div>
+    </div>
+  </div>
+  <div class="right-sidebar"></div>
+</div>
+
+<!-- 모달 -->
+<div id="myModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h2>결제 계좌 변경</h2>
+    <div class="center-content">
+      <div class="info-box">
+        <h3>오픈뱅킹을 이용한 계좌 정보 조회 및 변경</h3>
+        <p>오픈뱅킹을 이용하여 계좌 정보를 조회하고, 결제 계좌를 변경할 수 있습니다.</p>
+        <p>오픈뱅킹을 통해 모든 은행 계좌 정보를 통합하여 확인할 수 있습니다.</p>
+        <p style="color: red; font-weight: bold;">은행에서 출금이체동의(자동이체신청) 문자가 발송되어도 놀라지 마세요.</p>
+        <p>오픈뱅킹에 계좌가 잘 등록되었음을 안내하는 메시지입니다. 고객님의 요청없이 자동출금/이체되지 않습니다.</p>
+        <p>안심하고 이용해주세요.</p>
+        <label style="color: green; font-weight: bold;">
+          <input type="checkbox" id="agree1"> (필수) 오픈뱅킹 참여은행의 출금이체 동의
+        </label><br>
+        <label style="color: green; font-weight: bold;">
+          <input type="checkbox" id="agree2"> (필수) 금융결제원 개인정보 제공 동의
+        </label>
+      </div>
+      <div style="text-align: center;">
+        <a href="/change-account" class="styled-link" id="proceedButton">계좌통합조회</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <div>
+    <img src="img/hana_logo.png" alt="하나손해보험">
+    <span class="footer-info">하나손해보험주식회사 | 대표이사: 배성완 | 사업자등록번호 107-86-24985</span>
+    <span class="footer-info">서울특별시 종로구 창경궁로 117 (하나손해보험빌딩, 인의동) | TEL 02-6670-8400</span>
+    <br>
+    <span class="footer-info">©2023 Hana Insurance Co.,Ltd. All Rights Reserved.</span>
+  </div>
+  <div class="social-media">
+<!--    <img src="img/social_youtube.png" alt="유튜브">-->
+<!--    <img src="img/social_instagram.png" alt="인스타그램">-->
+<!--    <img src="img/social_blog.png" alt="블로그">-->
+    <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+    <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+    <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const proceedButton = document.getElementById('proceedButton');
+    const agree1 = document.getElementById('agree1');
+    const agree2 = document.getElementById('agree2');
+
+    function updateButtonState() {
+      proceedButton.style.pointerEvents = (agree1.checked && agree2.checked) ? 'auto' : 'none';
+      proceedButton.style.opacity = (agree1.checked && agree2.checked) ? '1' : '0.5';
+    }
+
+    agree1.addEventListener('change', updateButtonState);
+    agree2.addEventListener('change', updateButtonState);
+
+    updateButtonState();
+  });
+
+  function openModal() {
+    document.getElementById("myModal").style.display = "block";
+  }
+
+  function closeModal() {
+    document.getElementById("myModal").style.display = "none";
+  }
+
+  function changeAccount() {
+    fetch('/api/insurance/accountinfo')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok ' + response.statusText);
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log(data); // 데이터를 모달에 표시하거나 다른 방식으로 처리
+      openModal();
+    })
+    .catch(error => {
+      console.error('There was a problem with the fetch operation:', error);
+    });
+  }
+
+  window.onclick = function (event) {
+    if (event.target == document.getElementById("myModal")) {
+      closeModal();
+    }
+  }
+</script>
+</body>
+</html>

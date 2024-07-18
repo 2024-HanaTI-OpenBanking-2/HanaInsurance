@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <link rel="stylesheet" href="globals.css"/>
+  <link rel="stylesheet" href="style.css"/>
+  <title>하나 보험</title>
+  <style>
+    body {
+      font-family: 'CustomFont', sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      background-color: #fffdfd;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .header .left-section {
+      display: flex;
+      align-items: center;
+      font-size: 30px;
+      flex: 1;
+      font-weight: 800;
+    }
+
+    .header .left-section img {
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    .header .right-section {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      font-size: 20px;
+    }
+
+    .header .right-section .menu {
+      display: flex;
+      gap: 40px;
+    }
+
+    .header .right-section .menu a {
+      text-decoration: none;
+      color: #008080;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+
+    .header .right-section .menu a:hover {
+      color: #004d4d;
+    }
+
+    .header .right-section .logout {
+      background-color: #014242;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .main-search {
+      height: 20px;
+      margin-left: 10px;
+    }
+
+    .all-menu-icon {
+      height: 20px;
+      margin-left: 10px;
+    }
+
+    .header-mini-bar {
+      width: 100%;
+      height: 30px;
+      background-color: #f0f0f0;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+    }
+
+    .header-mini-bar .menu {
+      display: flex;
+      gap: 20px;
+    }
+
+    .header-mini-bar .menu a {
+      text-decoration: none;
+      color: #000;
+      font-weight: bold;
+    }
+
+    .header-mini-bar .menu a:hover {
+      color: #004d4d;
+    }
+
+    .main {
+      display: flex;
+      justify-content: center;
+      flex-grow: 1;
+      padding: 20px;
+      background-color: #ffffff;
+    }
+
+    .center-content {
+      width: 90%; /* Adjust width as needed */
+      max-width: 1200px; /* Or any other appropriate width */
+      padding: 40px; /* Increased padding for aesthetics */
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      /* Ensure it doesn't grow beyond the space it should occupy */
+      overflow: auto; /* Adds scroll if content is more */
+    }
+
+    .footer {
+      background-color: #f9f9f9;
+      padding: 20px;
+      text-align: center;
+      border-top: 1px solid #ddd;
+      width: 100%;
+    }
+
+    .footer img {
+      height: 20px;
+      margin: 0 10px;
+    }
+
+    .footer .social-media img {
+      height: 30px;
+      margin: 0 5px;
+    }
+
+    .footer .footer-info {
+      font-size: 12px;
+      color: #666;
+      margin: 10px 0;
+    }
+
+    @font-face {
+      font-family: 'CustomFont';
+      src: url('/fonts/Hana2-Medium.otf') format('opentype');
+    }
+
+    .modal {
+      display: none; /* Hide the modal by default */
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 5% auto; /* Adjusting vertical centering */
+      padding: 40px; /* Maintained increased padding for better spacing */
+      border: 1px solid #888;
+      width: 90%; /* Maintained increased width */
+      max-width: 800px; /* Maximum width */
+      height: 70%; /* New height setting to make the modal taller */
+      max-height: 700px; /* Maximum height to prevent overly large modal on big screens */
+      border-radius: 10px;
+      overflow-y: auto; /* Adds scroll if content exceeds the modal height */
+    }
+
+
+    .consent-label {
+      cursor: pointer;
+      transition: font-weight 0.3s ease, color 0.3s ease;
+    }
+
+    .consent-label:hover {
+      color: #017070; /* Darker shade for visibility */
+      font-weight: bold; /* Makes the label bold on hover */
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .form-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center; /* 모든 내용을 가운데 정렬 */
+      width: 100%; /* 폼을 전체 너비로 확장 */
+    }
+
+    .checkbox-group {
+      margin-bottom: 10px; /* 체크박스와 버튼 사이의 간격 조정 */
+      text-align: center; /* 체크박스와 라벨을 가운데 정렬 */
+    }
+
+    /* 가입하기 버튼 크기 조정 */
+    #joinButton {
+      background-color: #014242;
+      color: white;
+      padding: 5px 90px; /* 버튼 크기 조정 */
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 14px; /* 폰트 크기 증가 */
+      border: none; /* 기본 테두리 제거 */
+      cursor: pointer;
+      display: block; /* 버튼을 블록 요소로 만들어 너비 전체 사용 */
+      width: 100%; /* 버튼 너비를 폼 컨테이너에 맞춤 */
+      max-width: 600px; /* 버튼 최대 너비 설정 */
+      transition: background-color 0.3s ease; /* 배경색 전환 효과 추가 */
+    }
+
+    #joinButton.enabled {
+      background-color: #008080; /* 체크박스가 체크된 경우 배경색 */
+    }
+
+    /* 표 스타일 변경 */
+    table {
+      width: 100%; /* 표의 너비를 이미지 시작선과 맞추기 위해 조정 */
+      max-width: 1000px; /* 최대 너비 설정 */
+      margin: 0 auto; /* 표를 가운데 정렬 */
+      border-collapse: collapse;
+      background: white;
+      margin-top: 20px; /* 표와 상단 요소 사이에 여백 추가 */
+    }
+
+    table th, table td {
+      padding: 10px;
+      border: 1px solid #ddd;
+    }
+
+    table thead {
+      background-color: #008080; /* 헤더 배경색 변경 */
+      color: white; /* 헤더 텍스트 색상 */
+    }
+
+    table tr:nth-child(even) {
+      background-color: #f9f9f9; /* 짝수 행 배경색 */
+    }
+
+    table tr:hover {
+      background-color: #e0f7fa; /* 행 호버 시 배경색 */
+    }
+    .table-header {
+      background-color: #008080; /* 하나보험 색깔 */
+      color: white; /* 텍스트 색깔 */
+      padding: 10px; /* 패딩 추가 */
+    }
+    .footer-socials {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .footer-socials a {
+      font-size: 40px; /* 소셜 미디어 아이콘 크기 */
+      color: #333; /* 기본 색상을 어두운 회색으로 변경 */
+      transition: color 0.3s ease; /* 색상 변화에 부드러운 전환 효과 적용 */
+    }
+
+    .footer-socials a:hover {
+      color: #555; /* 호버 시 색상을 조금 더 밝은 회색으로 변경 */
+    }
+    .social-link i {
+      transition: transform 0.3s ease;
+    }
+
+    .social-link i:hover {
+      transform: scale(1.2); /* 아이콘 확대 효과 */
+    }
+  </style>
+</head>
+<body>
+<div class="header">
+  <!-- Header Content -->
+  <div class="left-section">
+    <img src="img/hana_logo.png" alt="로고">
+    <div class="text-wrapper">하나 보험</div>
+  </div>
+  <div class="right-section">
+    <div class="menu">
+      <a href="/join-lists">내 보험</a>
+      <a href="/product-list">보험 상품</a>
+      <a href="/change-account">계좌 변경</a>
+      <a href="/product-list">공사중</a>
+    </div>
+    <img src="img/main_search.png" class="main-search" alt="검색">
+    <img src="img/all_menu_icon.png" class="all-menu-icon" alt="전체 메뉴">
+    <a href="/logout" class="logout">로그아웃</a>
+  </div>
+</div>
+<div class="header-mini-bar">
+  <div class="menu">
+    <!-- Menu Content -->
+  </div>
+</div>
+<div class="main">
+  <div class="center-content">
+    <h2>보험 가입</h2>
+    <div class="center-content">
+      <div class="content">
+        <div class="insurance-confirm">
+          <img src="img/oneday_image.png" alt="해외여행" style="width: 520px; height: 150px;">
+          <div style="max-width: 1000px; margin: 20px auto; padding: 20px; border: 0px solid #7e9393; border-radius: 10px; background: #f9f9f9;">
+            <h2 style="text-align: center; color: #058787;">원데이 자동차보험 보장 내용</h2>
+            <table style="width: 100%; border-collapse: collapse; background: white;">
+              <thead>
+              <tr style="background-color: #058787;">
+                <th style="padding: 10px; border: 1px solid #ddd;">담보명</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">지급사유 / 보장한도</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;">대인배상 (대인Ⅱ)</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">사고로 다른 사람을 죽게 하거나 다치게 한 경우<br>피해자 1인당 무한 (대인배상Ⅰ초과분)</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;">대물배상</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">사고로 다른 사람의 재물을 없애거나 훼손한 경우<br>1사고당 최고 1억원</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;">자기신체사고</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">사고로 피보험자가 죽거나 다친 경우<br>피해자 1인당 최고 3천만원(부상: 최고 1천5백만원)</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;">자동차상해</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">사고로 피보험자가 죽거나 다친 경우<br>피해자 1인당 최고 1억원(부상: 최고 1천만원)</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;">무보험자동차에 의한 상해</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">타인차량을 운전하는 동안 무보험자동차에 의해 피보험자가 죽거나 다친 경우<br>피해자 1인당 최고 2억원</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;">타인차량 복구비용</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">사고로 피보험자동차가 파손된 경우 (타차량과의 충돌 또는 접촉으로 인한 손해만 보상하며, 벽·가드레일과 충돌하는 등의 단독 사고시 보상 불가)<br>1사고당 차량가액 한도<br>· 원데이자가용: 최고 3천만원(자기부담금: 50만원)<br>· 원데이렌터카: 최고 1천만원(자기부담금: 50만원)<br>- 단, 추가 장착 부속품은 보상제외</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="checkbox-group">
+            <input type="checkbox" id="ciUseConsent" name="ciUseConsent">
+            <label for="ciUseConsent" class="consent-label" data-pdf-url="/pdf/user-identification-consent.pdf">보험 약관 동의</label>
+          </div>
+          <div class="form-wrapper">
+            <form action="/join-insurance" method="post" id="joinForm">
+              <input type="hidden" name="insuranceId" value="INS003">
+              <button type="submit" id="joinButton" class="disabled" disabled>가입하기</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="footer">
+  <!-- Footer Content -->
+  <div>
+    <img src="img/hana_logo.png" alt="하나손해보험">
+    <span class="footer-info">하나손해보험주식회사 | 대표이사: 배성완 | 사업자등록번호 107-86-24985</span>
+    <span class="footer-info">서울특별시 종로구 창경궁로 117 (하나손해보험빌딩, 인의동) | TEL 02-6670-8400</span>
+    <br>
+    <span class="footer-info">©2023 Hana Insurance Co.,Ltd. All Rights Reserved.</span>
+  </div>
+  <div class="social-media">
+<!--    <img src="img/social_youtube.png" alt="유튜브">-->
+<!--    <img src="img/social_instagram.png" alt="인스타그램">-->
+<!--    <img src="img/social_blog.png" alt="블로그">-->
+    <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+    <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+    <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+  </div>
+</div>
+<div id="pdfModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <iframe id="pdfFrame" style="width: 100%; height: 100%;" frameborder="0"></iframe>
+  </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $(".consent-label").click(function () {
+      var pdfUrl = $(this).data("pdf-url");
+      if (pdfUrl) {
+        $("#pdfFrame").attr("src", pdfUrl);
+        $("#pdfModal").show();
+      } else {
+        alert("PDF 문서가 없습니다.");
+      }
+    });
+
+    $(".close").click(function () {
+      $("#pdfModal").hide();
+    });
+
+    $(window).click(function (event) {
+      if (event.target.id == "pdfModal") {
+        $("#pdfModal").hide();
+      }
+    });
+  });
+
+  document.getElementById('ciUseConsent').addEventListener('change', function() {
+    var joinButton = document.getElementById('joinButton');
+    if (this.checked) {
+      joinButton.disabled = false;
+      joinButton.classList.remove('disabled');
+      joinButton.classList.add('enabled'); /* 체크 시 클래스 추가 */
+    } else {
+      joinButton.disabled = true;
+      joinButton.classList.add('disabled');
+      joinButton.classList.remove('enabled'); /* 체크 해제 시 클래스 제거 */
+    }
+  });
+</script>
+</body>
+</html>
